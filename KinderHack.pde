@@ -12,8 +12,8 @@ String server="54.201.24.223";
 String name="Game Client";
 String description ="LOLGAMEZ";
 float timer = 6000;
-float timeW = width;
-float timeMark=0;
+float timeW;
+float timeMark;
 color timeC = color(0, 255, 0);
 int player = 0;
 color pColor;
@@ -114,11 +114,12 @@ void draw() {
       break;
     }
 
-
+ // TIMER. THIS IS THE TIMER. IT TIMES
     if (millis()-timeMark<timer) {
       pushStyle();
-      timeW=map(millis()-timeMark, 0, timeMark+timer, width, 0);
-      float temp = map(millis()-timeMark, 0, timeMark+timer, 0, 1);
+      timeW=map(millis(), timeMark, timeMark+timer, width, 0);
+      println(timeW);
+      float temp = map(millis(), timeMark, timeMark+timer, 0, 1);
       color from = color(0, 255, 0);
       color to = color(255, 0, 0);
       timeC=lerpColor(from, to, temp);
@@ -127,6 +128,8 @@ void draw() {
       rect(width/2, height/2, timeW, 100);
       rectMode(CORNER);
       popStyle();  
+      
+      
       // Check input
 
       //Send
@@ -139,14 +142,15 @@ void draw() {
 }
 
 void keyPressed() {
-  
+
   //IDIOT DEBUG OPTION
-  if(key=='1'){
-   timeMark=millis();
-   active=true;
+  if (key=='1') {
+    timeMark=millis();
+    println("TIMER SET AT: " +timeMark);
+    active=true;
   }
   /////////////////////
-  
+
   if (key != CODED) {
     if (key == DELETE || key == BACKSPACE) {
       if (local_string.length() - 1 >= 0) {
@@ -169,14 +173,15 @@ void keyPressed() {
 }
 
 void onStringMessage( String name, String value ) {
-  if(!active){
-  println("got string message " + name + " : " + value);
-  remote_string = value;
-  player = (int(value)-int(value)%100)/100;
-  qNum = int(value)%100;  
-  active = true;
-  timeMark=millis();
-  }else{
+  if (!active) {
+    println("got string message " + name + " : " + value);
+    remote_string = value;
+    player = (int(value)-int(value)%100)/100;
+    qNum = int(value)%100;  
+    timeMark=millis();
+    active = true;
+  } 
+  else {
     //SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST
   }
 }
