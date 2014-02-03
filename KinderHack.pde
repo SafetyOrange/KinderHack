@@ -3,9 +3,12 @@
  *  The missing assets are here:
  *  https://www.dropbox.com/sh/sl7pk6i8ljmw7ec/BZ2ZIZu5LH
  *  
+ * If you get to the parsing answers without me,  be sure to call these functions:
+ * playSound(2) for correct answer, and playSound(3) for incorrect answers.
+ *
  *  Also, I love you.
  *  Anthony
-
+ 
  */
 
 import spacebrew.*;
@@ -23,7 +26,7 @@ float timer = 10000;
 float timeW;
 float timeMark;
 color timeC = color(0, 255, 0);
-int player = 0;
+int playerNum = 0;
 color pColor;
 int qNum = 0;
 boolean active = false;
@@ -61,14 +64,14 @@ void draw() {
   } 
   else {
     background(0);
-    if (player==1) {
+    if (playerNum==1) {
       pColor = color(255, 0, 0);
       h4x = loadImage("redTeam.png");
       float temp = map(millis(), timeMark, timeMark+timer, height, -20);
       hPos = new PVector(0, temp);
       image(h4x, hPos.x, hPos.y);
     }
-    if (player==2) {
+    if (playerNum==2) {
       pColor = color(0, 0, 255);
       h4x = loadImage("blueTeam.png");
       float temp = map(millis(), timeMark, timeMark+timer, height, -20);
@@ -96,7 +99,7 @@ void draw() {
 
   // draw latest received message
   text("Message Received: ", 30, 120);  
-  text("Player: " + player + " qNum: " + qNum, 150, 120);
+  text("Player: " + playerNum + " qNum: " + qNum, 150, 120);
 
 
   //PROTOCODE
@@ -141,7 +144,6 @@ void draw() {
     if (millis()-timeMark<timer) {
       pushStyle();
       timeW=map(millis(), timeMark, timeMark+timer, width, 0);
-      println(timeW);
       float temp = map(millis(), timeMark, timeMark+timer, 0, 1);
       color from = color(0, 255, 0);
       color to = color(255, 0, 0);
@@ -159,29 +161,25 @@ void draw() {
     }
     else {
       active = false;
-      println("DONE");
     }
   }
 }
 
 void keyPressed() {
-  
-   player.play();
-   player = minim.loadFile("boop"+random(1,6)+".wav");
+
+  playSound(1);
 
   //IDIOT DEBUG OPTION
   if (key=='1') {
     timeMark=millis();
-    println("TIMER SET AT: " +timeMark);
-    player=1;
+    playerNum=1;
     qNum=1;
     active=true;
   }
 
   if (key=='2') {
     timeMark=millis();
-    println("TIMER SET AT: " +timeMark);
-    player=2;
+    playerNum=2;
     qNum=1;
     active=true;
   }
@@ -212,13 +210,38 @@ void onStringMessage( String name, String value ) {
   if (!active) {
     println("got string message " + name + " : " + value);
     remote_string = value;
-    player = (int(value)-int(value)%100)/100;
+    playerNum = (int(value)-int(value)%100)/100;
     qNum = int(value)%100;  
     timeMark=millis();
     active = true;
   } 
   else {
     //SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST//SEND BACK TO HOST
+  }
+}
+
+void playSound(int type) {
+
+  // 1 IS BOOP
+  // 2 IS CORRECT
+  // 3 IS INCORRECT
+
+  switch(type) {
+  case 1:
+    String file = "boop"+floor(random(1, 7))+".wav";
+    player = minim.loadFile(file);
+    player.play();
+    break;
+  case 2:
+    String file = "correct.wav";
+    player = minim.loadFile(file);
+    player.play();
+    break;
+  case 3:
+  String file = "incorrect.wav";
+    player = minim.loadFile(file);
+    player.play();
+    break;
   }
 }
 
