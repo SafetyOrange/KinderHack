@@ -9,13 +9,17 @@
  */
 
 import spacebrew.*;
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer player;
 
 String server="54.201.24.223";
 String name="Game Client";
 String description ="LOLGAMEZ";
 PImage h4x;
 PVector hPos;
-float timer = 6000;
+float timer = 10000;
 float timeW;
 float timeMark;
 color timeC = color(0, 255, 0);
@@ -34,6 +38,9 @@ String last_string = "";
 void setup() {
   size(1024, 768);
   background(0);
+
+  minim = new Minim(this);
+  player = minim.loadFile("boop1.wav");
 
   // instantiate the spacebrewConnection variable
   sb = new Spacebrew( this );
@@ -158,6 +165,9 @@ void draw() {
 }
 
 void keyPressed() {
+  
+   player.play();
+   player = minim.loadFile("boop"+random(1,6)+".wav");
 
   //IDIOT DEBUG OPTION
   if (key=='1') {
