@@ -1,11 +1,11 @@
 /*
  * Dear Adiel
- *
  *  The missing assets are here:
- *   https://www.dropbox.com/sh/sl7pk6i8ljmw7ec/BZ2ZIZu5LH
+ *  https://www.dropbox.com/sh/sl7pk6i8ljmw7ec/BZ2ZIZu5LH
+ *  
  *  Also, I love you.
- *   
  *  Anthony
+
  */
 
 import spacebrew.*;
@@ -13,6 +13,8 @@ import spacebrew.*;
 String server="54.201.24.223";
 String name="Game Client";
 String description ="LOLGAMEZ";
+PImage h4x;
+PVector hPos;
 float timer = 6000;
 float timeW;
 float timeMark;
@@ -51,9 +53,21 @@ void draw() {
     background(150, 150, 150);
   } 
   else {
-    if (player==1) pColor = color(255, 0, 0);
-    if (player==2) pColor = color(0, 0, 255);
-    background(pColor);
+    background(0);
+    if (player==1) {
+      pColor = color(255, 0, 0);
+      h4x = loadImage("redTeam.png");
+      float temp = map(millis(), timeMark, timeMark+timer, height, -20);
+      hPos = new PVector(0, temp);
+      image(h4x, hPos.x, hPos.y);
+    }
+    if (player==2) {
+      pColor = color(0, 0, 255);
+      h4x = loadImage("blueTeam.png");
+      float temp = map(millis(), timeMark, timeMark+timer, height, -20);
+      hPos = new PVector(0, temp);
+      image(h4x, hPos.x, hPos.y);
+    }
   }
   fill(255);
   stroke(250);
@@ -116,7 +130,7 @@ void draw() {
       break;
     }
 
- // TIMER. THIS IS THE TIMER. IT TIMES
+    // TIMER. THIS IS THE TIMER. IT TIMES
     if (millis()-timeMark<timer) {
       pushStyle();
       timeW=map(millis(), timeMark, timeMark+timer, width, 0);
@@ -130,8 +144,8 @@ void draw() {
       rect(width/2, height/2, timeW, 100);
       rectMode(CORNER);
       popStyle();  
-      
-      
+
+
       // Check input
 
       //Send
@@ -149,6 +163,16 @@ void keyPressed() {
   if (key=='1') {
     timeMark=millis();
     println("TIMER SET AT: " +timeMark);
+    player=1;
+    qNum=1;
+    active=true;
+  }
+
+  if (key=='2') {
+    timeMark=millis();
+    println("TIMER SET AT: " +timeMark);
+    player=2;
+    qNum=1;
     active=true;
   }
   /////////////////////
