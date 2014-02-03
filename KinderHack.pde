@@ -1,7 +1,9 @@
 /*
  * Dear Adiel
  *
- * I love you
+ *  The missing assets are here:
+ *   https://www.dropbox.com/sh/sl7pk6i8ljmw7ec/BZ2ZIZu5LH
+ *  Also, I love you.
  *   
  *  Anthony
  */
