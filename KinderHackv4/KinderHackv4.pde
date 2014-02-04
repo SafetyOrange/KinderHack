@@ -30,6 +30,7 @@ AudioPlayer boop3;
 AudioPlayer boop4;
 AudioPlayer boop5;
 AudioPlayer boop6;
+AudioPlayer gameOver;
 
 String server="54.201.24.223";
 String name="Game Client";
@@ -75,6 +76,7 @@ String userInput = "";   //string currently being typed by user
 String userAnswer = "";  //string after user hits enter
 
 boolean correct = false;
+boolean playEnd = true;
 
 boolean answered = false;
 int answeredMark = 0;
@@ -90,7 +92,7 @@ float winTrans = 0;
 
 void setup() {
   size(1440, 920);
-//  size(1080, 690);
+  //  size(1080, 690);
   background(0);
 
 
@@ -107,7 +109,7 @@ void setup() {
   boop6 = minim.loadFile("boop6.wav");  
   correctSound = minim.loadFile("correct.wav");
   incorrectSound = minim.loadFile("incorrect.wav");  
-
+  gameOver= minim.loadFile("gameover.wav");
 
 
   // instantiate the spacebrewConnection variable
@@ -126,7 +128,7 @@ void setup() {
 
   codeScroll1 = height;
   codeScroll2 = height + h4xWhite.height;
-  
+
   sideCodeScroll1 = height;
   sideCodeScroll2 = height + h4xWhite.height/2;
   sideCodeScroll3 = height + h4xWhite.height;
@@ -153,7 +155,7 @@ void draw() {
   if (codeScroll2 < -h4xWhite.height) {
     codeScroll2 = codeScroll1 + h4xWhite.height;
   }
-  
+
   image(h4xWhite, 0, codeScroll1);
   image(h4xWhite, 0, codeScroll2);
 
@@ -164,7 +166,7 @@ void draw() {
   sideCodeScroll1 -= sideScrollSpeed;
   sideCodeScroll2 -= sideScrollSpeed;
   sideCodeScroll3 -= sideScrollSpeed;
-  
+
   if (sideCodeScroll1 < -h4xWhite.height/2) {
     sideCodeScroll1 = sideCodeScroll3 + h4xWhite.height/2;
   }
@@ -174,34 +176,31 @@ void draw() {
   if (sideCodeScroll3 < -h4xWhite.height/2) {
     sideCodeScroll3 = sideCodeScroll2 + h4xWhite.height/2;
   }
-  
+
   image(h4xWhite, width-2*(clockRad + clockPadding), sideCodeScroll1, h4xWhite.width/2, h4xWhite.height/2);
   image(h4xWhite, width-2*(clockRad + clockPadding), sideCodeScroll2, h4xWhite.width/2, h4xWhite.height/2);
   image(h4xWhite, width-2*(clockRad + clockPadding), sideCodeScroll3, h4xWhite.width/2, h4xWhite.height/2);  
-  
-  
+
+
   //spinning circle thing on idle screen
-  if(!active){
+  if (!active) {
     float time = radians(map(millis()%4000, 0, 4000, 0, 360));
-    
+
     ellipseMode(RADIUS);
-    
+
     noStroke();
-    
+
     fill(100);
     arc(width - clockRad - clockPadding, clockRad + clockPadding, clockRad, clockRad, 0, time, PIE);
-    
+
     int num = 10;
-//    for(int i = 0; i < num; i++){
-//      
-//      fill(0, 255*0.2);
-//      arc(width - clockRad - clockPadding, clockRad + clockPadding, clockRad - clockRad*i/num, clockRad - clockRad*i/num, 0, time, PIE);
-//    
-//    }
-    
-    
+    for (int i = 0; i < num; i++) {
+
+      fill(0, 255*0.2);
+      arc(width - clockRad - clockPadding, clockRad + clockPadding, clockRad - clockRad*i/num, clockRad - clockRad*i/num, 0, time, PIE);
+    }
   }
-  
+
 
   //------------------------------------------------------------ IF ACTIVE THEN DO SOME SHIT... ------------------------------------------------------------
   if (active) {
@@ -209,19 +208,15 @@ void draw() {
 
     if (playerNum==1) {
       pColor = color(255, 255, 0);
-//      float temp = map(millis(), timeMark, timeMark+timer, height, -500);
-//      hPos = new PVector(0, temp);
-//      image(h4xRed, hPos.x, hPos.y);
-    
-  
+      //      float temp = map(millis(), timeMark, timeMark+timer, height, -500);
+      //      hPos = new PVector(0, temp);
+      //      image(h4xRed, hPos.x, hPos.y);
     }
     if (playerNum==2) {
       pColor = color(0, 0, 255);
-//      float temp = map(millis(), timeMark, timeMark+timer, height, -500);
-//      hPos = new PVector(0, temp);
-//      image(h4xBlue, hPos.x, hPos.y);
-      
-  
+      //      float temp = map(millis(), timeMark, timeMark+timer, height, -500);
+      //      hPos = new PVector(0, temp);
+      //      image(h4xBlue, hPos.x, hPos.y);
     }
 
 
@@ -274,18 +269,18 @@ void draw() {
 
     //----------QUESTIONS AND ANSWERS. THIS IS WHERE THEY ARE. BE PUZZLED----------
     if (qNum < 10 && qNum >= 0) {    //prevents crashing due to array out of bounds, just in case data is sent improperly formatted
-      
+
       int margin = 50;
       pushStyle();
       //draw transparent box behind text to make more readable
       fill(40, 255*0.8);
       rectMode(CORNERS);
       rect(margin, 80, width*2/3, height - 250);
-      
-      
+
+
       textFont(mono, 50);
       fill(pColor);
-      if(qNum == 9){
+      if (qNum == 9) {
         textFont(mono, 40);
       }
       text(questions[qNum], margin + 10, 80 + 10, width*2/3 - margin, height);
@@ -338,15 +333,9 @@ void draw() {
     }
   } 
   else {                  //--------------------INACTIVE SCREEN CODE--------------------
-  
-  
+
+
     pColor = color(180);
-    
-
-
-
-
-
   }
 
 
@@ -358,6 +347,10 @@ void draw() {
     textFont(mono, 100);
     fill(0);
     text("YELLOW WINS", width/2, height/2);
+    if (playEnd==true) {
+      playSound(4);
+      playEnd=false;
+    }  
 
     if (winTrans < 255) {
       winTrans += 3;
@@ -372,7 +365,11 @@ void draw() {
     textAlign(CENTER, CENTER);
     textFont(mono, 100);
     fill(0);
-    text("BLUE WINS", width/2, height/2);    
+    text("BLUE WINS", width/2, height/2); 
+    if (playEnd==true) {
+      playSound(4);
+      playEnd=false;
+    }     
 
     if (winTrans < 255) {
       winTrans += 3;
@@ -380,13 +377,6 @@ void draw() {
 
     popStyle();
   }
-
-
-
-
-  
-  
-  
 }
 
 
@@ -487,6 +477,7 @@ void playSound(int type) {
   // 1 IS BOOP
   // 2 IS CORRECT
   // 3 IS INCORRECT
+  // 4 IS GAMEOVER
 
   switch(type) {
   case 1:
@@ -529,6 +520,8 @@ void playSound(int type) {
     incorrectSound.play();
     incorrectSound.rewind();
     break;
+  case 4:
+    gameOver.play();
   }
 }
 
@@ -538,7 +531,7 @@ void reset() {
 }
 
 
-//boolean sketchFullScreen(){
-//  return true;
-//}
+boolean sketchFullScreen() {
+  return true;
+}
 
