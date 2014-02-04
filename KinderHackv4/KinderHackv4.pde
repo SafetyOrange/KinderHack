@@ -91,8 +91,7 @@ float winTrans = 0;
 
 
 void setup() {
-  size(1440, 920);
-  //  size(1080, 690);
+  size(displayWidth, displayHeight);
   background(0);
 
 
