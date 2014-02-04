@@ -84,8 +84,8 @@ float winTrans = 0;
 
 
 void setup() {
-  //  size(displayWidth, displayHeight);
-  size(1080, 690);
+    size(displayWidth, displayHeight);
+ // size(1080, 690);
   background(0);
 
 
@@ -476,7 +476,7 @@ void reset() {
 }
 
 
-//boolean sketchFullScreen(){
-//  return true;
-//}
+boolean sketchFullScreen(){
+  return true;
+}
 
